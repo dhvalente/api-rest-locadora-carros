@@ -10,12 +10,23 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
+        $credenciais = $request->all(['email', 'password']); //[]
 
-        if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Usuário ou senha inválido'], 403);
+        //autenticação (email e senha)
+        $token = auth('api')->attempt($credenciais);
+
+        if($token) { //usuário autenticado com sucesso
+            return response()->json(['token' => $token]);
+
+        } else { //erro de usuário ou senha
+            return response()->json(['erro' => 'Usuário ou senha inválido!'], 403);
+
+            //401 = Unauthorized -> não autorizado
+            //403 = forbidden -> proibido (login inválido)
         }
-        echo $token;
+
+        //retornar um Json Web Token
+        return 'login';
     }
 
 
